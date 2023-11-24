@@ -50,7 +50,24 @@ app.post('/registration', async (req, res) => {
         res.status(500).send('Error registering user');
     }
 });
+// Get uploaded data endpoint
+app.get('/getUploadedData/', async (req, res) => {
 
+  try {
+    // Find uploaded data based on userEmail
+    const uploadedData = await Timestamp.find( );
+
+    if (!uploadedData || uploadedData.length === 0) {
+      return res.status(404).json({ message: 'No data found for the user' });
+    }
+    // Send the complete uploaded data (including images) in the response'
+    console.log('yy',uploadedData[0]._id)
+    res.status(200).send({data:uploadedData.length});
+  } catch (error) {
+    console.error('Error retrieving uploaded data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 // Login endpoint
 
 app.post('/login', async (req, res) => {
