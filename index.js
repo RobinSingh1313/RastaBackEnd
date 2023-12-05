@@ -11,9 +11,9 @@ const port = 2700;
 const fs = require('fs');
 
 const mongoDbUrl = 'mongodb://127.0.0.1:27017/rasta_ai';
-
+const userrouter = require('./routers/userrouter')
 app.use(express.json());
-
+app.use('/',userrouter)
 mongoose.connect(mongoDbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB');
@@ -24,32 +24,61 @@ mongoose.connect(mongoDbUrl, { useNewUrlParser: true, useUnifiedTopology: true }
 
 // Registration endpoint
 // Registration endpoint
+/*
 app.post('/registration', async (req, res) => {
-    const { username, email, designation, password, idCardImagePath, profileImagePath } = req.body;
+  const { username, email, designation, password, idCardImagePath, profileImagePath } = req.body;
 
-    try {
-        // Validate required fields
-        if (!username || !email || !designation || !password) {
-            return res.status(400).send('Missing required fields');
-        }
+  try {
+      // Validate required fields
+      if (!username || !email || !designation || !password) {
+          return res.status(400).send('Missing required fields');
+      }
 
-        // Create a new user
-        const newUser = new User({
-            username,
-            email,
-            designation,
-            password,
-            idCardImagePath,
-            profileImagePath,
-        });
+      // Create a new user
+      const newUser = new User({
+          username,
+          email,
+          designation,
+          password,
+          idCardImagePath,
+          profileImagePath,
+      });
 
-        await newUser.save();
-        res.status(201).send('User registered successfully');
-    } catch (error) {
-        console.error('Error registering user:', error);
-        res.status(500).send('Error registering user');
-    }
-});
+      await newUser.save();
+      res.status(201).send('User registered successfully');
+  } catch (error) {
+      console.error('Error registering user:', error);
+      res.status(500).send('Error registering user');
+  }
+});*/
+//new user
+// Registration endpoint
+// app.post('/newregister', async (req, res) => {
+//   const { username, password } = req.body;
+
+//   try {
+//     // Validate required fields
+//     if (!username || !password) {
+//       return res.status(400).send('Missing required fields');
+//     }
+
+//     // Create a new user
+//     const newUser = new User({
+//       username,
+//       password,
+//     });
+
+//     await newUser.save();
+//     res.status(201).send('User registered successfully');
+//   } catch (error) {
+//     console.error('Error registering user:', error);
+//     res.status(500).send('Error registering user');
+//   }
+// });
+
+
+
+
 // Get uploaded data endpoint
 app.get('/getUploadedData/', async (req, res) => {
 
@@ -71,24 +100,29 @@ app.get('/getUploadedData/', async (req, res) => {
 // Login endpoint
 
 app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
+  console.log('Received login request with username:', username, 'and password:', password);
 
   try {
-    // Find the user by username or email
-    const user = await User.findOne({ $or: [{ email }, { email: email }] });
+    // Find the user by email
+    const user = await User.findOne({ username,password });
 
     if (!user) {
       return res.status(404).send('User not found');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
+    // Simple password comparison
+    if (password !== user.password) {
       return res.status(401).send('Invalid password');
     }
 
     // Include user details in the response
-   
+    const userDetails = {
+      id: user._id,
+      username: user.username,
+      password: user.password
+      // Add more user details as needed
+    };
 
     res.status(200).json({ message: 'Login successful', user: userDetails });
   } catch (error) {

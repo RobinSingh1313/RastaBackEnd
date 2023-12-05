@@ -1,18 +1,28 @@
-const UserService = require('../services/user.services');
+// const UserService = require('../services/user.services');
+
+const User = require('../model/user.model')
+
+
 exports.register = async (req, res, next) => {
-    try {
-      const {  username, email, password,designation, idCardImagePath, profileImagePath} = req.body;
-  
-      // Validate that required fields are present
-      if (!username || !email || !designation || !password ||!idCardImagePath ||!profileImagePath ||!designation) {
-        return res.status(400).json({ status: false, error: 'Missing required fields' });
-      }
-  
-      const successRes = await UserService.registerUser(email, password);
-      res.json({ status: true, success: "User registered successfully" });
-    } catch (error) {
-      console.error('Error during registration:', error);
-      res.status(500).json({ status: false, error: 'Error during registration' });
+  const { username, password } = req.body;
+
+  try {
+    // Validate required fields
+    if (!username || !password) {
+      return res.status(400).send('Missing required fields');
     }
-  };
-  
+
+    // Create a new user
+    const newUser = new User({
+      username,
+      password,
+    });
+
+    await newUser.save();
+    res.status(201).send('User registered successfully');
+  } catch (error) {
+    console.error('Error registering user:', error);
+    res.status(500).send('Error registering user');
+  }
+};
+

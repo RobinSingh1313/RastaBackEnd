@@ -2,17 +2,15 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
   {
-    username: { type: String, unique: true, required: true },
-    email: { type: String, unique: true, required: true },
-    designation: { type: String, required: true },
-    password: { type: String, required: true },
-    idCardImagePath: { type: String }, // Field for ID card image path
-    profileImagePath: { type: String }, // Field for profile picture path
+    username: { type: String,  required: true },
+
+    password: { type: String, required: false },
+  
   },
   {
-collection:'MetaData'
+collection:'user-data'
   }
 );
-const User = mongoose.model('MetaData', userSchema); 
+const User = mongoose.model('user-data', userSchema); 
 
 module.exports = User;
