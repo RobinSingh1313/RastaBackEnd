@@ -8,9 +8,9 @@ const userSchema = new mongoose.Schema(
   
   },
   {
-collection:'user-data'
+collection:'details'
   }
 );
-const User = mongoose.model('user-data', userSchema); 
+const User = mongoose.model('details', userSchema); 
 
 module.exports = User;

@@ -2,14 +2,19 @@
 
 const User = require('../model/user.model')
 
-
 exports.register = async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
     // Validate required fields
     if (!username || !password) {
-      return res.status(400).send('Missing required fields');
+      return res.status(400).send('Missing required field');
+    }
+
+    // Check if the username already exists
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(409).send('Username already exists');
     }
 
     // Create a new user
@@ -25,4 +30,3 @@ exports.register = async (req, res, next) => {
     res.status(500).send('Error registering user');
   }
 };
-

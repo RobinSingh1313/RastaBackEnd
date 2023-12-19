@@ -3,17 +3,21 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const path = require('path'); // Add this line
 const { v4: uuidv4 } = require('uuid');
+//const cors = require('cors'); // Add this line
 
 
 const User = require('./model/user.model');
 const app = express();
-const port = 2700;
+const port = 5000;
 const fs = require('fs');
-
-const mongoDbUrl = 'mongodb://127.0.0.1:27017/rasta_ai';
+ mongoDbUrl =  'mongodb+srv://rasta:aiunika123@rastaai.owxfyuz.mongodb.net/rasta_ai?retryWrites=true&w=majority';
+ //mongoDbUrl =  'mongodb://127.0.0.1:27017/rasta_ai';
 const userrouter = require('./routers/userrouter')
+//app.use(cors());
+const profileRoutes = require('./routers/profileRoutes')
 app.use(express.json());
 app.use('/',userrouter)
+app.use('/',profileRoutes)
 mongoose.connect(mongoDbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB');
