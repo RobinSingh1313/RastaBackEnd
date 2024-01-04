@@ -30,3 +30,24 @@ exports.register = async (req, res, next) => {
     res.status(500).send('Error registering user');
   }
 };
+
+
+
+exports.UpdatePassword = async (req, res) => {
+  try {
+    const { username, password } = req.params;
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Both username and password are required for the update.' });
+  n    }
+    const user = await User.findOne({ username: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+    user.password = password;
+    await user.save();
+    return res.status(200).json({ message: 'Password updated successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+};

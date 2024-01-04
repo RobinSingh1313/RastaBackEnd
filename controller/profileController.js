@@ -3,14 +3,28 @@ const ProfileSchema = require('../model/profileModel');
 const OriginalModel = require('../model/profileModel')
 
 const addDetails = async (req, res) => {
-    try {
-        const newProfile = new ProfileSchema.ProfileModel(req.body);
-        const savedProfile = await newProfile.save();
-        res.status(201).json(savedProfile);
-      } catch (error) {
-        res.status(500).json({ error: error.message });
-      }
-    };
+  try {
+    // Check if the Username already exists
+    const existingProfile = await ProfileSchema.ProfileModel.findOne({
+      Username: req.body.Username,
+    });
+
+    if (existingProfile) {
+      // Username already exists, send an error response
+      return res.status(400).json({ error: 'Username already exists' });
+    }
+
+    // Create and save the new profile
+    const newProfile = new ProfileSchema.ProfileModel(req.body);
+    // const savedProfile = await newProfile.save();
+    const savedProfile = await Profile.create(newProfile);
+
+
+    res.status(201).json(savedProfile);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 //   try {
 //     const newDeatils = new ProfileSchema({
@@ -45,8 +59,8 @@ const addDetails = async (req, res) => {
 
 const getData = async (req, res) => {
   try {
-    const FirstName = req.params.firstName;
-    const profile = await ProfileSchema.find({ FirstName });
+    const Username = req.params.Username;
+    const profile = await ProfileSchema.find({ Username });
 
     if (!profile) {
       return res.status(404).json({ message: 'Profile not found' });
@@ -63,15 +77,26 @@ const originalDataSchema = require('../model/profileModel')
 
 
 const add = async (req, res) => {
-  try {
-    const newProfile = new originalDataSchema.OriginalModel(req.body);
-    const savedProfile = await newProfile.save();
-    console.log('Saved Profile:', savedProfile);
+ 
+try {
+  // Check if the Username already exists
+  const existingProfile = await originalDataSchema.OriginalModel.findOne({
+    Username: req.body.Username,
+  });
 
-    res.status(201).json(savedProfile);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  if (existingProfile) {
+    // Username already exists, send an error response
+    return res.status(400).json({ error: 'Username already exists' });
   }
+
+  // Create and save the new profile
+  const newProfile = new originalDataSchema.OriginalModel(req.body);
+  const savedProfile = await newProfile.save();
+
+  res.status(201).json(savedProfile);
+} catch (error) {
+  res.status(500).json({ error: error.message });
+}
 };
 
 module.exports = {

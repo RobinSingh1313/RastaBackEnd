@@ -4,7 +4,7 @@ const router = express.Router();
 const profileController = require('../controller/profileController');
 
 router.post('/profile', profileController.addDetails);
-router.get('/getdata/:firstName',profileController.getData);
+router.get('/getdata/:Username',profileController.getData);
 router.post('/data',profileController.add)
 // router.route('/updating/:Username')
 //  .get( profileController.handleProfile)
